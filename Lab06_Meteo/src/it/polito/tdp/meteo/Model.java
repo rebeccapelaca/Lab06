@@ -1,6 +1,5 @@
 package it.polito.tdp.meteo;
 
-import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -54,7 +53,7 @@ public class Model {
 		
 		int livello = 0;
 		
-		recursive(soluzione_parziale, soluzione_completa, livello, mese);
+		recursive(soluzione_parziale, soluzione_completa, livello);
 		
 		String soluzione = "";
 		
@@ -65,7 +64,7 @@ public class Model {
 
 	}
 	
-	public void recursive(List<SimpleCity> soluzione_parziale, List<SimpleCity> soluzione_completa, int livello, int mese) {
+	public void recursive(List<SimpleCity> soluzione_parziale, List<SimpleCity> soluzione_completa, int livello) {
 		
 		int contatore_giorni = 1;
 		int costo;
@@ -83,28 +82,27 @@ public class Model {
 			
 			if(c.getCounter()<NUMERO_GIORNI_CITTA_MAX) {
 				
-				SimpleCity sc = new SimpleCity(c.getNome(),0);
-				costo = calcolaCosto(soluzione_parziale, c.getRilevamenti(), contatore_giorni+1, mese);
+				SimpleCity sc = new SimpleCity(c.getNome(),0);		
+				costo = calcolaCosto(soluzione_parziale, c.getRilevamenti(), contatore_giorni+1);
 				sc.setCosto(costo);
 				soluzione_parziale.add(sc);
 				c.increaseCounter();
 				contatore_giorni += NUMERO_GIORNI_CITTA_CONSECUTIVI_MIN;
-				recursive(soluzione_parziale, soluzione_completa, livello+1, mese);
+				recursive(soluzione_parziale, soluzione_completa, livello+1);
 				soluzione_parziale.remove(sc);
 				contatore_giorni -= NUMERO_GIORNI_CITTA_CONSECUTIVI_MIN;	
 			}
 		}
 	}	
 		
-	private int calcolaCosto(List<SimpleCity> soluzione_parziale, List<Rilevamento> rilevamenti, int giorno, int mese) {
+	private int calcolaCosto(List<SimpleCity> soluzione_parziale, List<Rilevamento> rilevamenti, int giorno) {
 		
 		int costo = 0;
 		int ultimo_inserito;
-		LocalDate data_tmp = LocalDate.of(2013, mese , giorno);
 		
 		for(Rilevamento r : rilevamenti) {
 			
-			if(r.getData().equals(data_tmp)) {
+			// quando trovo il giorno che mi interessa
 				
 				costo = r.getUmidita();
 			
@@ -113,10 +111,8 @@ public class Model {
 				if(!soluzione_parziale.get(ultimo_inserito-1).getNome().equals(soluzione_parziale.get(ultimo_inserito).getNome()))
 					
 					costo += COST;
-			}
-		}
-		
-		System.out.println(costo);
+			}	
+	
 		return costo;
 	}
 
