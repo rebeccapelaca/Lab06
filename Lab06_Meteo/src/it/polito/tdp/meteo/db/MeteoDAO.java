@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import it.polito.tdp.meteo.bean.Rilevamento;
@@ -40,13 +41,64 @@ public class MeteoDAO {
 	}
 
 	public List<Rilevamento> getAllRilevamentiLocalitaMese(int mese, String localita) {
+		
+		List<Rilevamento> rilevamenti_localita_mese = new LinkedList<Rilevamento>();
+		
+		
+		final String sql = "SELECT umidita, data FROM situazione WHERE localita = ?  AND month(data) = ?";
 
-		return null;
+		try {
+			Connection conn = DBConnect.getInstance().getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setString(1, localita);
+			st.setInt(2, mese);
+
+			ResultSet rs = st.executeQuery();
+
+			if (rs.next()) {
+				
+				Rilevamento r = new Rilevamento(localita, rs.getDate("data"), rs.getInt("umidita"));
+				rilevamenti_localita_mese.add(r);
+			}
+
+			conn.close();
+			
+			return rilevamenti_localita_mese;
+			
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
 	}
 
 	public Double getAvgRilevamentiLocalitaMese(int mese, String localita) {
+		
+		double umidita_media = 0;
+		
+		final String sql = "SELECT AVG(umidita) as media FROM situazione WHERE localita = ? AND month(data) = ?";
 
-		return 0.0;
+		try {
+			Connection conn = DBConnect.getInstance().getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setString(1, localita);
+			st.setInt(2, mese);
+
+			ResultSet rs = st.executeQuery();
+
+			if (rs.next()) {
+				
+				umidita_media = rs.getDouble("media");
+			}
+
+			conn.close();
+			
+			return umidita_media;
+			
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
 	}
-
 }

@@ -42,7 +42,7 @@ public class Citta {
 	}
 	
 	public void increaseCounter() {
-		this.counter += 1;
+		this.counter += 3;
 	}
 
 	@Override
