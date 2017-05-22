@@ -46,6 +46,8 @@ public class Model {
 		Citta Genova = new Citta("Genova", meteodao.getAllRilevamentiLocalitaMese(mese, "genova"));
 		Citta Torino = new Citta("Torino", meteodao.getAllRilevamentiLocalitaMese(mese, "torino"));
 		Citta Milano = new Citta("Milano", meteodao.getAllRilevamentiLocalitaMese(mese, "milano"));
+		//Genova.stampa();
+		//System.out.println(Genova.getRilevamenti());
 		
 		citta.add(Genova);
 		citta.add(Torino);
@@ -69,12 +71,15 @@ public class Model {
 		int contatore_giorni = 1;
 		int costo;
 		
-		if(contatore_giorni<=NUMERO_GIORNI_TOTALI) {
+		//System.out.println(soluzione_completa);
+		
+		if(contatore_giorni>=NUMERO_GIORNI_TOTALI) {
 			
 			if(punteggioSoluzione(soluzione_parziale)<punteggioSoluzione(soluzione_completa) && this.controllaParziale(soluzione_parziale)) {
 				
 				soluzione_completa.clear();
-				soluzione_completa.addAll(soluzione_parziale);		
+				soluzione_completa.addAll(soluzione_parziale);
+				System.out.println(soluzione_completa);
 			}
 		}
 		
@@ -82,15 +87,18 @@ public class Model {
 			
 			if(c.getCounter()<NUMERO_GIORNI_CITTA_MAX) {
 				
+				//System.out.println(c.getCounter());
+				
 				SimpleCity sc = new SimpleCity(c.getNome(),0);		
 				costo = calcolaCosto(soluzione_parziale, c.getRilevamenti(), contatore_giorni+1);
 				sc.setCosto(costo);
 				soluzione_parziale.add(sc);
 				c.increaseCounter();
 				contatore_giorni += NUMERO_GIORNI_CITTA_CONSECUTIVI_MIN;
+				System.out.println(contatore_giorni);
 				recursive(soluzione_parziale, soluzione_completa, livello+1);
 				soluzione_parziale.remove(sc);
-				contatore_giorni -= NUMERO_GIORNI_CITTA_CONSECUTIVI_MIN;	
+				//contatore_giorni -= NUMERO_GIORNI_CITTA_CONSECUTIVI_MIN;	
 			}
 		}
 	}	
@@ -100,19 +108,27 @@ public class Model {
 		int costo = 0;
 		int ultimo_inserito;
 		
-		for(Rilevamento r : rilevamenti) {
-			
-			// quando trovo il giorno che mi interessa
+		Rilevamento r = null;
+		
+		//System.out.println(rilevamenti);
+		//System.out.println(giorno);
+		
+		if(rilevamenti.size()>=giorno-1)
+			r = rilevamenti.get(giorno-1);
+		
+		//System.out.println(r);
 				
-				costo = r.getUmidita();
+		costo = r.getUmidita();
 			
-				ultimo_inserito = soluzione_parziale.size();
-				
-				if(!soluzione_parziale.get(ultimo_inserito-1).getNome().equals(soluzione_parziale.get(ultimo_inserito).getNome()))
-					
-					costo += COST;
-			}	
-	
+		ultimo_inserito = soluzione_parziale.size();
+		
+		if(ultimo_inserito>1)
+			if(!soluzione_parziale.get(ultimo_inserito-2).getNome().equals(soluzione_parziale.get(ultimo_inserito-1).getNome()))
+				costo += COST;	
+		
+		//System.out.println(soluzione_parziale);
+		//System.out.println(costo);
+		
 		return costo;
 	}
 

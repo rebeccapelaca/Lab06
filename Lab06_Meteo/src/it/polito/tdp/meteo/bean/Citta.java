@@ -8,6 +8,12 @@ public class Citta {
 	private List<Rilevamento> rilevamenti;
 	private int counter = 0;
 	
+	public void stampa(){
+		for (Rilevamento i : rilevamenti){
+			System.out.println(i);
+		}
+	}
+	
 	public Citta(String nome) {
 		this.nome = nome;
 	}
